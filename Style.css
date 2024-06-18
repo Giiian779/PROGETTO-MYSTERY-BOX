@@ -1,0 +1,348 @@
+/* Imposta il box-sizing su border-box per tutti gli elementi e rimuove margini e padding */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Stile per il corpo della pagina */
+body {
+    height: 100%;
+    margin: 0;
+    text-align: center;
+    background-color: white;
+    background-position: center; /* Centra l'immagine */
+    background-size: cover; /* Imposta la dimensione dell'immagine di sfondo per coprire l'intera area */
+}
+
+/* Stile per il contenitore principale del contenuto */
+#content {
+    width: 100%; /* Larghezza del contenuto */
+    margin: auto; /* Centra il contenuto orizzontalmente */
+    padding-top: 90px; /* Aggiunge spazio sopra al contenuto */
+    box-sizing: border-box; /* Include padding e bordi nella larghezza e altezza totale */
+}
+
+/* Stile per l'intestazione */
+header {
+    text-align: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-color: #757575;
+    padding: 0px 0;
+    width: 100%; /* Larghezza dell'intestazione al 100% */
+    position: fixed; /* Posiziona l'intestazione in modo fisso in cima alla pagina */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Assicura che l'intestazione sia sopra gli altri elementi */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); /* Aggiunge una sfumatura sotto l'intestazione */
+}
+
+/* Stile per la navigazione */
+nav {
+    display: flex; /* Usa Flexbox */
+    justify-content: center; /* Centra gli elementi orizzontalmente */
+    background-color: none;
+    width: 100%;
+    align-items: center;
+    font-size: 0.8em;
+}
+
+/* Stile per la lista di navigazione */
+nav ul {
+    display: flex; /* Usa Flexbox */
+    list-style-type: none; /* Rimuove i punti elenco */
+    padding: 0;
+    margin: 0;
+    background-color: none;
+}
+
+/* Stile per ogni elemento della lista */
+nav ul li {
+    display: block;
+    text-align: center;
+}
+
+/* Stile per i link nella navigazione e i bottoni del dropdown */
+nav ul li a, .dropdown .dropbtn {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none; /* Rimuove la sottolineatura dai link */
+    width: 100%;
+}
+
+/* Stile per i link nella navigazione quando vengono passati sopra */
+nav ul li a:hover, .dropdown:hover .dropbtn {
+    background-color: #575757;
+}
+
+/* Stile per il contenuto del dropdown */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Stile per ogni elemento del dropdown */
+.dropdown-content .dropdown-item {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none; /* Rimuove la sottolineatura dai link */
+    display: block;
+    text-align: left;
+}
+
+/* Stile per ogni elemento del dropdown quando viene passato sopra */
+.dropdown-content .dropdown-item:hover {
+    background-color: #f1f1f1;
+}
+
+/* Mostra il contenuto del dropdown quando si passa sopra */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Stile per il contenitore del titolo */
+.title-container {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    line-height: 1; /* Riduce lo spazio tra le righe */
+}
+
+/* Stile per il titolo principale */
+.title-black {
+    text-align: center;
+    display: inline-block;
+    color: black;
+    font-size: 4em;
+    font-weight: bold;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+/* Stile per il bottone di modifica */
+.modifica_bottone {
+    position: absolute;
+    text-decoration: none;
+    display: block;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+}
+
+/* Stile per il link dentro il bottone di modifica */
+.modifica_bottone a {
+    display: block; /* Permette di fare clic su tutto il bottone */
+    color: black; /* Colore del testo nero */
+    text-decoration: none; /* Rimuove la sottolineatura dai link */
+    display: flex; /* Usa Flexbox per centrare il contenuto */
+    align-items: center; /* Centra verticalmente */
+    justify-content: center; /* Centra orizzontalmente */
+    text-align: center; /* Centra il testo */
+    height: 100%; /* Assicura che il link riempia tutto il bottone */
+    width: 100%; /* Assicura che il link riempia tutto il bottone */
+    line-height: 100%; /* Centra verticalmente il testo */
+    padding: 0; /* Rimuove il padding */
+    margin: 0; /* Rimuove il margine */
+}
+
+/* Stile per il bottone di pagamento */
+.modifica_bottone_pagamento {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: white;
+    border: 1px solid black;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* Stile per il link dentro il bottone di pagamento */
+.modifica_bottone_pagamento a {
+    display: block; /* Permette di fare clic su tutto il bottone */
+    color: black; /* Colore del testo nero */
+    text-decoration: none; /* Rimuove la sottolineatura dai link */
+    display: flex; /* Usa Flexbox per centrare il contenuto */
+    align-items: center; /* Centra verticalmente */
+    justify-content: center; /* Centra orizzontalmente */
+    text-align: center; /* Centra il testo */
+    height: 100%; /* Assicura che il link riempia tutto il bottone */
+    width: 100%; /* Assicura che il link riempia tutto il bottone */
+    line-height: 100%; /* Centra verticalmente il testo */
+    padding: 0; /* Rimuove il padding */
+    margin: 0; /* Rimuove il margine */
+    line-height: 0; /* Aggiunto per correggere un problema di centratura */
+}
+
+/* Contenitore per il contatore */
+.counter-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Stile per i bottoni del contatore */
+.counter-button {
+    background-color: white;
+    border: 1px solid black;
+    padding: 10px 20px;
+    font-size: 1.5em;
+    cursor: pointer;
+    width: 60px; /* Larghezza fissa per i bottoni */
+}
+
+/* Stile per il display del contatore */
+.counter-display {
+    margin: 0 10px;
+    font-size: 2em;
+    width: 60px; /* Larghezza fissa per il display del contatore */
+    text-align: center;
+}
+
+/* Stile per il bottone di acquisto */
+.purchase-button {
+    display: block;
+    margin: 20px auto;
+    background-color: white;
+    border: 1px solid black;
+    font-size: 1.5em;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* Stile per le sezioni con sfondo bianco */
+.colore-bianco {
+    background-color: #ffffff; /* Bianco */
+    padding: 50px 0;
+    text-align: center;
+}
+
+/* Stile per le sezioni con sfondo grigio */
+.colore-grigio {
+    background-color: #f2f2f2; /* Grigio */
+    padding: 50px 0;
+    text-align: center;
+}
+
+/* Contenitore per le palline */
+.pallina-container {
+    display: inline-block;
+    text-align: center;
+}
+
+/* Stile per la descrizione delle palline */
+.descrizione-pallina {
+    margin-top: 10px;
+}
+
+/* Wrapper per il bottone "b" */
+.bottone-wrapper-b {
+    position: absolute;
+    top: 90%;
+    transform: translateY(-50%);
+    right: -140px;
+}
+
+/* Wrapper per il bottone "a" */
+.bottone-wrapper-a {
+    position: absolute;
+    top: 30%;
+    transform: translateY(-50%);
+    left: 100px;
+}
+
+/* Wrapper generale per il bottone */
+.bottone-wrapper {
+    position: fixed;
+    top: 3%; /* Posizione del bottone sulla barra */
+    left: 0px; /* Posizione del bottone sulla barra */
+    z-index: 1001; /* Sopra la barra */
+}
+
+/* Contenitore per la sezione "sorpresa" */
+.sorpresa {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    text-align: center;
+    flex-direction: column;
+}
+
+/* Stile per la seconda scrittura nella sezione "sorpresa" */
+.sorpresa .scrittura2 {
+    text-align: left;
+    width: 30%;
+}
+
+/* Stile per la freccia nella sezione "sorpresa" */
+.sorpresa .freccia {
+    text-align: center;
+    width: 10%;
+}
+
+/* Stile per il logo nella sezione "sorpresa" */
+.sorpresa .logo1 {
+    text-align: right;
+    width: 30%;
+}
+
+/* Contenitore per il contenuto nella sezione "sorpresa" */
+.sorpresa .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* Contenitore per la sezione "codice" */
+.codice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+/* Stile per la terza scrittura nella sezione "codice" */
+.codice .scrittura3 {
+    text-align: right;
+    width: 30%;
+}
+
+/* Stile per la freccia animata nella sezione "codice" */
+.codice .frecciagif {
+    text-align: center;
+    width: 10%;
+}
+
+/* Stile per il logo nella sezione "codice" */
+.codice .logo3 {
+    text-align: left;
+    width: 30%;
+}
+
+/* Contenitore per il contenuto nella sezione "codice" */
+.codice .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* Stile per i titoli h2 */
+h2 {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2em; /* Dimensione del font */
+}
