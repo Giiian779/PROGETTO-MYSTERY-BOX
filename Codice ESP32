@@ -1,1 +1,160 @@
+// Dichiarazione delle Librerie
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <ArduinoJson.h>
+#include <ESP32Servo.h>
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+#include <BluetoothSerial.h>
+// Dichiarazione delle Macro
+#define I2C_SDA 32
+#define I2C_SCL 33
+#define LED_ROSSO  13
+#define LED_VERDE 12
+#define servoPin 19
+#define IR_SENSOR_PIN 2
 
+// Inizializza l'oggetto del display LCD con indirizzo I2C 0x27, 16 colonne e 2 righe
+const char* ssid = "Raffaele";
+const char* password = "lelleeee";
+const char* serverName = "http://172.20.10.3/MisteryBox/pagamento.php";
+int ultimo_id = -1;
+int nuovo_id = 0;
+unsigned long lastUpdateTime = 0; // Variabile per memorizzare il timestamp dell'ultimo aggiornamento
+const unsigned long updateInterval = 5000; // Intervallo di aggiornamento in millisecondi (60 secondi)
+LiquidCrystal_I2C lcd(0x27,16,2); 
+
+// Dichiarazione oggetto Servo per controllare il servomotore
+BluetoothSerial SerialBT;
+Servo myservo;  
+int sensorValue = 0;
+int contatore = 0;
+int somma = 0;
+int nuovo_numero_giri=0;
+void setup() 
+{
+  myservo.setPeriodHertz(50);  // standard 50 hz per il servo           
+  myservo.attach(servoPin, 500, 2500); // Collega il servomotore al pin 19 con impulsi tra 500 e 2500 microsecondi
+  Serial.begin(115200);
+  pinMode(IR_SENSOR_PIN, INPUT_PULLUP);
+    SerialBT.begin("ESP32_BT_Servo");
+  // Inizializza il bus I2C con SDA su 32, SCL su 33 e la frequenza di 10kHz  
+  Wire.begin(I2C_SDA, I2C_SCL, 10000); 
+   WiFi.begin(ssid, password);
+  lcd.init();          // Inizializza il display LCD
+  lcd.backlight();     // Accende la retroilluminazione del display 
+  lcd.setContrast(30); // Valore di contrasto (da 0 a 255)
+
+  pinMode(LED_ROSSO, OUTPUT);
+  pinMode(LED_VERDE, OUTPUT);
+
+  digitalWrite(LED_VERDE, HIGH); // Accende il LED BLU all'inizio 
+  lcd.setCursor(0,0);  // Imposta il cursore alla colonna 0, riga 0
+  lcd.clear();         // Cancella il display e riposiziona il cursore
+  lcd.print("  MISTERY BOX");   // Stampa il messaggio sul display
+  lcd.setCursor(0,1);
+  lcd.print("   SCAN QR");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connessione alla rete WiFi in corso...");
+  }
+  Serial.println("Connesso alla rete WiFi");
+
+  lastUpdateTime = millis(); // Inizializza il tempo dell'ultimo aggiornamento
+}
+
+void sendQuantityToServer(int quantity) {
+  // Invia una richiesta HTTP al server
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    http.begin(serverName); // Specifica l'indirizzo del server
+
+    // Specifica il tipo di contenuto
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    // Dati da inviare
+    String postData = "quantita=" + String(quantity);
+
+    // Esegui la richiesta HTTP POST
+    int httpResponseCode = http.POST(postData);
+    
+    if (httpResponseCode > 0) {
+      String response = http.getString(); // Ricevi la risposta del server
+    } else {
+      Serial.print("Errore nella richiesta: ");
+      Serial.println(httpResponseCode);
+    }
+    
+    http.end(); // Chiudi la connessione
+  } else {
+    Serial.println("Errore nella connessione WiFi");
+  }
+}
+
+void loop() 
+{ 
+  
+  if (millis() - lastUpdateTime >= updateInterval) { 
+    lastUpdateTime = millis(); // Aggiorna il tempo dell'ultimo aggiornamento
+    if (WiFi.status() == WL_CONNECTED) {
+      HTTPClient http;
+      http.begin(serverName); // Specifica l'indirizzo del server
+      int httpResponseCode = http.GET(); // Esegui la richiesta HTTP GET
+      if (httpResponseCode > 0) {
+        String response = http.getString(); // Ricevi la risposta del server
+        DynamicJsonDocument doc(1024);
+        DeserializationError error = deserializeJson(doc, response);
+        if (error) {
+          Serial.print("Errore nel parsing JSON: ");
+          Serial.println(error.c_str());
+          return;
+        }
+        nuovo_id = doc["id"];
+        nuovo_numero_giri = doc["erogata"];
+        if (nuovo_id != ultimo_id) {
+           somma += nuovo_numero_giri;
+          ultimo_id = nuovo_id;
+          for (int i = 0; i < nuovo_numero_giri; i++) {
+            myservo.write(90);  // Ruota il servo a 90 gradi
+            delay(100);        // Aspetta un secondo
+            myservo.write(0);   // Ruota il servo a 0 gradi
+            delay(1000);        // Aspetta un secondo
+          }
+        }
+      } else {
+        Serial.print("Errore nella richiesta: ");
+        Serial.println(httpResponseCode);
+      }  
+      http.end(); // Chiudi la connessione
+    } else {
+      Serial.println("Errore nella connessione WiFi");
+    }
+  }
+  sensorValue = digitalRead(IR_SENSOR_PIN);
+  
+  if (sensorValue == LOW) { // Significa che l'oggetto è rilevato
+    
+    Serial.println("Monetina rilevata");
+    // Ruota il servomotore di 90 gradi
+    sendQuantityToServer(1);
+  }
+  if (SerialBT.available()) { // Controlla se ci sono dati disponibili via Bluetooth
+    String contatoreStr = SerialBT.readString(); // Legge il numero inviato via Bluetooth
+    Serial.println("valore in stringa: "+ String(contatoreStr));
+    contatore = contatoreStr.toInt(); // Converte la stringa in un numero intero
+    Serial.println("valore convertito: "+String(contatore));
+    sendQuantityToServer(contatore);
+  }
+  if (Serial.available()) {
+    SerialBT.write(Serial.read());
+  }
+ 
+  if(somma >= 6){
+     digitalWrite(LED_ROSSO, HIGH);
+     digitalWrite(LED_VERDE, LOW);
+  }else{
+    digitalWrite(LED_VERDE, HIGH);
+    digitalWrite(LED_ROSSO, LOW);
+
+  }
+}
